@@ -1,0 +1,2 @@
+# Rasterization
+Gráficas por computadora

@@ -1,4 +1,4 @@
-#Universidad del Valle de Guatemala
+# Universidad del Valle de Guatemala
 # Facultad de Ingeniería
 # Departamento de Ciencias de la Computación
 # Curso: Gráficas por Computadora
@@ -6,9 +6,9 @@
 # Anggelie Velásquez 221181
 # Laboratorio 1 - Filling any Polygon
 
-
 import tkinter as tk
 
+# Polígonos
 polygon1 = [(100, 300), (120, 280), (115, 250), (142, 265), (168, 250),
             (165, 280), (185, 300), (155, 305), (140, 330), (128, 303)]
 
@@ -16,14 +16,23 @@ polygon2 = [(300, 100), (267, 51), (318, 16), (353, 67)]
 
 polygon3 = [(200, 120), (234, 68), (259, 120)]
 
-polygon4 = [(500, 280), (535, 262), (589, 191), (640, 156), (622, 139),
-            (763, 140), (747, 155), (837, 248), (848, 282), (759, 295),
-            (746, 317), (702, 317), (719, 333), (667, 333), (684, 318),
-            (639, 317), (604, 247), (553, 283)]
+def flip_polygon_vertically(points):
+    ys = [y for (_, y) in points]
+    y_center = (min(ys) + max(ys)) // 2
+    return [(x, 2 * y_center - y) for (x, y) in points]
 
-hole = [(730, 278), (756, 223), (783, 251), (787, 273)]
+# Tetera y agujero reflejados correctamente
+polygon4 = flip_polygon_vertically([
+    (500, 280), (535, 262), (589, 191), (640, 156), (622, 139),
+    (763, 140), (747, 155), (837, 248), (848, 282), (759, 295),
+    (746, 317), (702, 317), (719, 333), (667, 333), (684, 318),
+    (639, 317), (604, 247), (553, 283)
+])
 
-# Función que implementa el algoritmo de Scanline para rellenar cualquier polígono
+hole = flip_polygon_vertically([
+    (730, 278), (756, 223), (783, 251), (787, 273)
+])
+
 def scanline_fill(canvas, points, fill_color="#FFADAD"):
     edges = []
     n = len(points)
@@ -35,10 +44,9 @@ def scanline_fill(canvas, points, fill_color="#FFADAD"):
             continue
         if y0 > y1:
             x0, y0, x1, y1 = x1, y1, x0, y0
-        # inv_slope es la pendiente inversa que se usa en la intersección con el scanline
-        edges.append({'x0': x0, 'y0': y0, 'x1': x1, 'y1': y1, 'inv_slope': (x1 - x0) / (y1 - y0)})
+        edges.append({'x0': x0, 'y0': y0, 'x1': x1, 'y1': y1,
+                      'inv_slope': (x1 - x0) / (y1 - y0)})
 
-    # Se determina el rango de líneas horizontales que se deben analizar
     ymin = min(p[1] for p in points)
     ymax = max(p[1] for p in points)
 
@@ -62,7 +70,6 @@ def main():
     canvas = tk.Canvas(window, width=900, height=400, bg="white", highlightthickness=0)
     canvas.pack()
 
-    # Paleta de colores pastel
     pastel_colors = {
         "rosa": "#FFADAD",
         "durazno": "#FFD6A5",
@@ -84,7 +91,7 @@ def main():
     scanline_fill(canvas, polygon4, fill_color=pastel_colors["rosa"])
     canvas.create_polygon(polygon4, outline="#AAAAAA", fill="", width=1)
 
-    scanline_fill(canvas, hole, fill_color="white")  # Este relleno lo consulté con una IA para saber cómo simular un agujero
+    scanline_fill(canvas, hole, fill_color="white")  # Agujero en blanco
     canvas.create_polygon(hole, outline="#AAAAAA", fill="", width=1)
 
     window.mainloop()

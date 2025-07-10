@@ -1,4 +1,4 @@
-# Universidad del Valle de Guatemala
+# Universidad del Valle de Guatemala 
 # Facultad de Ingeniería
 # Departamento de Ciencias de la Computación
 # Curso: Gráficas por Computadora
@@ -9,7 +9,6 @@
 import tkinter as tk
 from math import sin, cos, radians
 
-# TRANSFORMACIONES
 def translate(points, dx, dy):
     return [(x + dx, y + dy) for (x, y) in points]
 
@@ -28,7 +27,6 @@ def flip_polygon_vertically(points):
     y_center = (min(ys) + max(ys)) // 2
     return [(x, 2 * y_center - y) for (x, y) in points]
 
-# POLÍGONOS BASE
 polygon1 = [(0, 0), (20, -20), (15, -50), (42, -35), (68, -50),
             (65, -20), (85, 0), (55, 5), (40, 30), (28, 3)]
 
@@ -45,7 +43,7 @@ polygon4 = flip_polygon_vertically([
 
 hole = [(755, 245), (781, 190), (808, 218), (812, 240)]
 
-# SCANLINE FILL
+# Algoritmo de Scanline Fill. Este algoritmo lo consulté con una IA para entender cómo implementar el relleno de polígonos.
 def scanline_fill(canvas, points, fill_color="#FFADAD"):
     edges = []
     n = len(points)
@@ -77,21 +75,19 @@ def scanline_fill(canvas, points, fill_color="#FFADAD"):
                 x_end = int(intersections[i + 1])
                 canvas.create_line(x_start, y, x_end, y, fill=fill_color)
 
-# MAIN
 def main():
     window = tk.Tk()
     window.title("Polygon Fill Lab - Anggelie Velásquez")
     canvas = tk.Canvas(window, width=900, height=400, bg="white", highlightthickness=0)
     canvas.pack()
 
+    # Paleta de colores pastel elegidos para dar un estilo visual armónico
     pastel_colors = {
         "rosa": "#FFADAD",         # Tetera
         "durazno": "#FFD6A5",      # Estrella
         "menta": "#E4F1EE",        # Cuadrado
         "azul_cielo": "#D9EDF8",   # Triángulo
     }
-
-    # Posiciones corregidas para alineación diagonal
 
     estrella = rotate(polygon1, 15)
     estrella = translate(estrella, 150, 100)
@@ -108,11 +104,11 @@ def main():
     scanline_fill(canvas, triangulo, fill_color=pastel_colors["azul_cielo"])
     canvas.create_polygon(triangulo, outline="#AAAAAA", fill="", width=1)
 
-    # Tetera y agujero
     scanline_fill(canvas, polygon4, fill_color=pastel_colors["rosa"])
     canvas.create_polygon(polygon4, outline="#AAAAAA", fill="", width=1)
 
-    scanline_fill(canvas, hole, fill_color="white")
+    # Agujero en blanco (se simula sobre la tetera) – Esto también fue consultado con IA para entender cómo hacerlo visualmente
+    scanline_fill(canvas, hole, fill_color="white") 
     canvas.create_polygon(hole, outline="#AAAAAA", fill="", width=1)
 
     window.mainloop()

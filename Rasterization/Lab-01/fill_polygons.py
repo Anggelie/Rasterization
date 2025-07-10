@@ -7,21 +7,35 @@
 # Laboratorio 1 - Filling any Polygon
 
 import tkinter as tk
+from math import sin, cos, radians
 
-# Polígonos
-polygon1 = [(100, 300), (120, 280), (115, 250), (142, 265), (168, 250),
-            (165, 280), (185, 300), (155, 305), (140, 330), (128, 303)]
+# TRANSFORMACIONES
+def translate(points, dx, dy):
+    return [(x + dx, y + dy) for (x, y) in points]
 
-polygon2 = [(300, 100), (267, 51), (318, 16), (353, 67)]
-
-polygon3 = [(200, 120), (234, 68), (259, 120)]
+def rotate(points, angle_deg):
+    angle = radians(angle_deg)
+    return [
+        (
+            int(x * cos(angle) - y * sin(angle)),
+            int(x * sin(angle) + y * cos(angle))
+        )
+        for x, y in points
+    ]
 
 def flip_polygon_vertically(points):
     ys = [y for (_, y) in points]
     y_center = (min(ys) + max(ys)) // 2
     return [(x, 2 * y_center - y) for (x, y) in points]
 
-# Tetera y agujero reflejados correctamente
+# POLÍGONOS BASE
+polygon1 = [(0, 0), (20, -20), (15, -50), (42, -35), (68, -50),
+            (65, -20), (85, 0), (55, 5), (40, 30), (28, 3)]
+
+polygon2 = [(0, 0), (-33, -49), (18, -84), (53, -33)]
+
+polygon3 = [(0, 0), (34, -52), (59, 0)]
+
 polygon4 = flip_polygon_vertically([
     (500, 280), (535, 262), (589, 191), (640, 156), (622, 139),
     (763, 140), (747, 155), (837, 248), (848, 282), (759, 295),
@@ -29,10 +43,9 @@ polygon4 = flip_polygon_vertically([
     (639, 317), (604, 247), (553, 283)
 ])
 
-hole = flip_polygon_vertically([
-    (730, 278), (756, 223), (783, 251), (787, 273)
-])
+hole = [(755, 245), (781, 190), (808, 218), (812, 240)]
 
+# SCANLINE FILL
 def scanline_fill(canvas, points, fill_color="#FFADAD"):
     edges = []
     n = len(points)
@@ -64,34 +77,42 @@ def scanline_fill(canvas, points, fill_color="#FFADAD"):
                 x_end = int(intersections[i + 1])
                 canvas.create_line(x_start, y, x_end, y, fill=fill_color)
 
+# MAIN
 def main():
     window = tk.Tk()
-    window.title("Polygon Fill Lab - Anggelie")
+    window.title("Polygon Fill Lab - Anggelie Velásquez")
     canvas = tk.Canvas(window, width=900, height=400, bg="white", highlightthickness=0)
     canvas.pack()
 
     pastel_colors = {
-        "rosa": "#FFADAD",
-        "durazno": "#FFD6A5",
-        "amarillo": "#FDFFB6",
-        "menta": "#E4F1EE",
-        "azul_cielo": "#D9EDF8",
-        "lavanda": "#DEDAF4"
+        "rosa": "#FFADAD",         # Tetera
+        "durazno": "#FFD6A5",      # Estrella
+        "menta": "#E4F1EE",        # Cuadrado
+        "azul_cielo": "#D9EDF8",   # Triángulo
     }
 
-    scanline_fill(canvas, polygon2, fill_color=pastel_colors["menta"])
-    canvas.create_polygon(polygon2, outline="#AAAAAA", fill="", width=1)
+    # Posiciones corregidas para alineación diagonal
 
-    scanline_fill(canvas, polygon1, fill_color=pastel_colors["durazno"])
-    canvas.create_polygon(polygon1, outline="#AAAAAA", fill="", width=1)
+    estrella = rotate(polygon1, 15)
+    estrella = translate(estrella, 150, 100)
+    scanline_fill(canvas, estrella, fill_color=pastel_colors["durazno"])
+    canvas.create_polygon(estrella, outline="#AAAAAA", fill="", width=1)
 
-    scanline_fill(canvas, polygon3, fill_color=pastel_colors["azul_cielo"])
-    canvas.create_polygon(polygon3, outline="#AAAAAA", fill="", width=1)
+    cuadrado = rotate(polygon2, 45)
+    cuadrado = translate(cuadrado, 250, 160)
+    scanline_fill(canvas, cuadrado, fill_color=pastel_colors["menta"])
+    canvas.create_polygon(cuadrado, outline="#AAAAAA", fill="", width=1)
 
+    triangulo = rotate(polygon3, -25)
+    triangulo = translate(triangulo, 330, 220)
+    scanline_fill(canvas, triangulo, fill_color=pastel_colors["azul_cielo"])
+    canvas.create_polygon(triangulo, outline="#AAAAAA", fill="", width=1)
+
+    # Tetera y agujero
     scanline_fill(canvas, polygon4, fill_color=pastel_colors["rosa"])
     canvas.create_polygon(polygon4, outline="#AAAAAA", fill="", width=1)
 
-    scanline_fill(canvas, hole, fill_color="white")  # Agujero en blanco
+    scanline_fill(canvas, hole, fill_color="white")
     canvas.create_polygon(hole, outline="#AAAAAA", fill="", width=1)
 
     window.mainloop()

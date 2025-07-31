@@ -31,7 +31,7 @@ El objetivo de este laboratorio es desarrollar un visualizador de modelos 3D en 
 
 ---
 
-## 🛠️ Archivos principales
+## Archivos principales
 
 | Archivo | Descripción |
 |--------|-------------|
